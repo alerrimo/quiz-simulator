@@ -1,30 +1,31 @@
-# 👮 Simulatore Quiz - Vice Ispettori PS 2026
+# 👮‍♂️ Simulatore Quiz Vice Ispettori PdS 2025
 
-Un simulatore web leggero e reattivo progettato per la preparazione al concorso per **Vice Ispettori della Polizia di Stato**. Il software permette di esercitarsi sulla banca dati ufficiale (5000 quesiti) del 2025 direttamente dal browser, sia su PC che su dispositivi mobili.
+Questo progetto è un simulatore web leggero e reattivo progettato per aiutare i candidati a prepararsi per il concorso **Vice Ispettori della Polizia di Stato** utilizzando la banca dati ufficiale 2025.
 
-## 🚀 Funzionalità Principali
+## 🚀 Caratteristiche Principali
 
-- **Doppia Modalità di Studio**:
-  - **Esercitazione**: Correzione immediata dopo ogni risposta per un apprendimento rapido.
-  - **Simulazione Esame**: 100 quesiti misti (20 Costituzionale, 40 Penale, 40 Procedura Penale) con timer di 90 minuti.
-- **Sistema di Punteggio Reale**: 
-  - `+0,30` per ogni risposta corretta.
-  - `-0,10` per ogni risposta errata.
-  - `0` per le risposte omesse.
-- **Ottimizzazione Mobile**: Interfaccia adattiva con pulsanti larghi per un uso agevole da smartphone.
-- **Caricamento Automatico**: Il software legge automaticamente il file `banca_dati_quesiti.json` presente nel repository.
+* **Banca Dati Integrata**: Accesso immediato a oltre 5.000 quesiti ufficiali suddivisi per materia.
+* **Modalità Simulazione Esame**: 100 domande miste (20 Costituzionale, 40 Penale, 40 Procedura Penale) con timer di 90 minuti, riflettendo le reali condizioni d'esame.
+* **Modalità Esercitazione**: Filtra i quiz per singola materia e scegli il numero di domande per sessioni di studio mirate.
+* **Sistema "Da Ripetere"**: Salva automaticamente i quesiti errati in una lista di ripasso dedicata tramite `localStorage`.
+* **Calcolo Punteggio Reale**: Algoritmo di punteggio concorsuale (+0.30 per le corrette, -0.10 per le errate).
+* **Interfaccia Adattiva**: Supporto completo alla modalità Chiara e Scura per non affaticare la vista durante lo studio prolungato.
 
+## 🛠️ Architettura Tecnica
 
-## 📱 Uso su Smartphone
+Il progetto è stato ottimizzato per garantire velocità e stabilità, risolvendo i problemi di caricamento di grandi moli di dati nel browser:
+* **Separazione Dati/Logica**: La banca dati risiede in un file esterno `database.js` per una gestione efficiente della memoria.
+* **Zero Dipendenze**: Sviluppato in puro HTML5, CSS3 e JavaScript (Vanilla JS), non richiede installazione o server complessi.
+* **Client-Side**: Tutti i dati rimangono nel browser dell'utente, garantendo privacy e velocità istantanea.
 
-Per un'esperienza simile a un'app nativa:
-1. Apri il link del simulatore sul browser dello smartphone.
-2. Seleziona **"Aggiungi alla schermata Home"** dal menu del browser (Safari su iOS o Chrome su Android).
-3. L'icona apparirà sul tuo telefono per un accesso rapido.
+## 📖 Come Utilizzarlo
 
-## 📝 Note Tecniche
+1.  Clona o scarica il repository.
+2.  Assicurati che i file `index.html` e `database.js` siano nella stessa cartella.
+3.  Apri `index.html` con qualsiasi browser moderno (Chrome, Edge, Safari, Firefox).
 
-Il simulatore mescola casualmente l'ordine delle domande e la posizione delle risposte ad ogni sessione. Poiché nella banca dati originale la risposta corretta è sempre la "A", il software provvede a rimescolarle dinamicamente per garantire l'efficacia dell'allenamento.
+## 📝 Note sulla Configurazione
+Per caricare correttamente i quesiti, il file `database.js` deve contenere la variabile `bancaDatiUfficiale` formattata come array di oggetti JSON.
 
 ---
-*Progetto sviluppato per scopi didattici e di preparazione concorsuale.*
+*Disclaimer: Questo strumento non è un'applicazione ufficiale del Ministero dell'Interno ma un supporto didattico creato per facilitare lo studio.*
