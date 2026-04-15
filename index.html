@@ -12,32 +12,39 @@
     --text: #f0f0f5; --muted: #6b6b7a;
     --font-display: 'Bebas Neue', sans-serif; --font-body: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
-  
-  #loader, #quiz, #results { padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-  #quiz, #results { display: none; }
 
-  .load-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: min(600px, 95vw); gap: 20px; display: flex; flex-direction: column; z-index: 10; }
+  /* Tema Chiaro */
+  body.light-mode {
+    --bg: #f4f4f9; --surface: #ffffff; --surface2: #f0f0f5; --border: #d1d1d6;
+    --text: #1c1c1e; --muted: #8e8e93;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; transition: background 0.3s, color 0.3s; }
+  
+  #loader, #quiz, #results, #errorList { padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; }
+  #quiz, #results, #errorList { display: none; }
+
+  .load-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: min(800px, 95vw); gap: 20px; display: flex; flex-direction: column; z-index: 10; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
   .mode-select, .grid-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
   
   .btn { border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; transition: 0.2s; font-family: var(--font-display); letter-spacing: 1px; color: var(--text); background: var(--surface2); text-align: center; }
   .btn:hover { border-color: var(--accent); }
   .btn.active { border-color: var(--accent); background: rgba(232,65,62,0.12); color: var(--accent); }
-  .start-btn { background: var(--accent); color: white; font-size: 24px; border: none; margin-top: 10px; width: 100%; }
+  .start-btn { background: var(--accent); color: white; font-size: 24px; border: none; margin-top: 10px; width: 100%; cursor: pointer; border-radius: 8px; font-family: var(--font-display); }
   .start-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  .topbar { position: fixed; top: 0; width: 100%; background: rgba(20,20,23,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-  .timer { font-family: var(--font-mono); color: var(--accent2); font-size: 20px; font-weight: bold; }
+  .topbar { position: fixed; top: 0; width: 100%; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
   
   .quiz-container { max-width: 800px; width: 100%; margin-top: 100px; padding-bottom: 100px; }
-  .option { background: var(--surface); border: 1px solid var(--border); padding: 16px; margin: 10px 0; border-radius: 12px; cursor: pointer; text-align: left; width: 100%; color: var(--text); font-size: 16px; display: flex; gap: 15px; transition: transform 0.1s; }
-  .option:hover:not(:disabled) { transform: translateX(5px); border-color: var(--muted); }
-  .correct { border-color: var(--green) !important; background: rgba(39, 201, 122, 0.15) !important; }
-  .wrong { border-color: var(--red) !important; background: rgba(232, 65, 62, 0.15) !important; }
+  .option { background: var(--surface); border: 1px solid var(--border); padding: 16px; margin: 10px 0; border-radius: 12px; cursor: pointer; text-align: left; width: 100%; color: var(--text); font-size: 16px; display: flex; gap: 15px; }
+  .correct { border-color: var(--green) !important; background: rgba(39, 201, 122, 0.15) !important; color: var(--green); }
+  .wrong { border-color: var(--red) !important; background: rgba(232, 65, 62, 0.15) !important; color: var(--red); }
   
-  .q-cat { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent2); margin-bottom: 8px; display: block; }
-  .next-btn { background: var(--accent); color: white; padding: 15px 40px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-family: var(--font-display); font-size: 20px; border: none; display: none; width: 100%; }
+  .review-card { background: var(--surface2); border-left: 4px solid var(--red); padding: 15px; margin-bottom: 15px; border-radius: 4px; text-align: left; }
+  .ans-correct { color: var(--green); font-size: 14px; font-weight: bold; margin-top: 5px; }
+
+  .theme-toggle { cursor: pointer; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 12px; font-weight: bold; }
   
   .divider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; margin: 10px 0; }
   .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
@@ -45,37 +52,44 @@
 </head>
 <body>
 
+<div class="topbar" id="globalTopbar">
+  <div id="quizMeta" style="display:none; flex: 1; display: flex; justify-content: space-between; align-items: center; margin-right: 20px;">
+    <div id="progress" style="font-size: 14px; color: var(--muted);">Domanda 1 / --</div>
+    <div id="timer" style="font-family: var(--font-mono); color: var(--accent2); font-weight: bold;">90:00</div>
+    <div id="liveScore" style="color: var(--green); font-family: var(--font-mono);">Punti: 0.00</div>
+  </div>
+  <button class="theme-toggle" id="themeBtn">🌙 DARK</button>
+</div>
+
 <div id="loader">
   <div class="load-box">
-    <h1 style="font-family: var(--font-display); font-size: 42px; text-align: center; letter-spacing: 2px;">QUIZ <span style="color:var(--accent)">VP 2026</span></h1>
+    <h1 style="font-family: var(--font-display); font-size: 42px; text-align: center;">QUIZ <span style="color:var(--accent)">VP 2026</span></h1>
     
     <div id="fileSection">
-      <p style="color:var(--muted); font-size: 13px; margin-bottom: 8px; text-transform: uppercase;">1. Carica Banca Dati (.json)</p>
+      <p style="color:var(--muted); font-size: 11px; margin-bottom: 8px;">1. DATABASE (CARICATO AUTOMATICAMENTE SE DISPONIBILE)</p>
       <input type="file" id="fileInput" accept=".json" style="background: var(--surface2); padding: 10px; border-radius: 8px; width: 100%; border: 1px dashed var(--border);">
+      <p id="dbStatus" style="font-size: 12px; margin-top: 5px; color: var(--green);">Nessun file caricato</p>
     </div>
 
     <div class="divider">2. MODALITÀ</div>
     <div class="mode-select">
       <button class="btn active" data-mode="practice">ESERCITAZIONE</button>
-      <button class="btn" data-mode="exam">SIMULAZIONE ESAME</button>
+      <button class="btn" data-mode="exam">SIMULAZIONE</button>
+      <button class="btn" id="btnShowErrors" style="border-color: var(--accent2); color: var(--accent2);">DA RIPETERE (<span id="countRepeat">0</span>)</button>
     </div>
 
     <div id="setupPractice">
-      <div class="divider">3. FILTRI ESERCITAZIONE</div>
-      <p style="color:var(--muted); font-size: 12px; margin-bottom: 6px;">MATERIA:</p>
+      <div class="divider">3. FILTRI</div>
       <div class="grid-select" id="catFilter">
         <button class="btn active" data-cat="all">Tutte</button>
         <button class="btn" data-cat="Diritto Costituzionale">Cost.</button>
         <button class="btn" data-cat="Diritto Penale">Penale</button>
         <button class="btn" data-cat="Diritto Processuale Penale">Proc. Pen.</button>
-        <button class="btn" data-cat="repeat" id="btnRepeat" style="display:none; color: var(--accent2); border-color: var(--accent2);">ERRORI (<span id="countRepeat">0</span>)</button>
       </div>
-
-      <p style="color:var(--muted); font-size: 12px; margin: 15px 0 6px;">NUMERO DOMANDE:</p>
+      <p style="margin: 10px 0 5px; font-size: 12px; color: var(--muted);">NUMERO DOMANDE:</p>
       <div class="grid-select" id="numFilter">
         <button class="btn active" data-n="20">20</button>
         <button class="btn" data-n="50">50</button>
-        <button class="btn" data-n="100">100</button>
         <button class="btn" data-n="all">TUTTE</button>
       </div>
     </div>
@@ -85,77 +99,102 @@
 </div>
 
 <div id="quiz">
-  <div class="topbar">
-    <div id="progress" style="font-size: 14px; color: var(--muted);">Domanda 1 / --</div>
-    <div class="timer" id="timer">90:00</div>
-    <div id="liveScore" style="font-family: var(--font-mono); font-size: 14px; color: var(--green);">Punti: 0.00</div>
-  </div>
-
   <div class="quiz-container">
-    <span class="q-cat" id="displayCat">--</span>
-    <h2 id="questionText" style="font-size: 22px; margin-bottom: 30px; font-weight: 400; line-height: 1.5;"></h2>
+    <span id="displayCat" style="color: var(--accent2); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">--</span>
+    <h2 id="questionText" style="margin: 20px 0; font-weight: 400; line-height: 1.4;"></h2>
     <div id="options"></div>
-    <button class="next-btn" id="nextBtn">CONFERMA E CONTINUA →</button>
+    <button class="btn start-btn" id="nextBtn" style="display:none; margin-top: 20px;">CONFERMA E CONTINUA →</button>
   </div>
 </div>
 
 <div id="results">
-  <div class="load-box" style="text-align: center; border-color: var(--accent);">
-    <h1 id="resTitle" style="font-family: var(--font-display); font-size: 80px; margin-bottom: 0;">0.00</h1>
-    <p id="resSub" style="letter-spacing: 3px; color: var(--muted); margin-bottom: 30px;">PUNTEGGIO FINALE</p>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 30px;">
-      <div class="btn" style="cursor: default;">CORRETTE<br><span id="resC" style="color:var(--green); font-size: 20px;">0</span></div>
-      <div class="btn" style="cursor: default;">ERRATE<br><span id="resW" style="color:var(--red); font-size: 20px;">0</span></div>
-      <div class="btn" style="cursor: default;">SALTATE<br><span id="resS" style="font-size: 20px;">0</span></div>
+  <div class="load-box" style="text-align: center;">
+    <h1 id="resTitle" style="font-size: 60px; font-family: var(--font-display);">0.00</h1>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+      <div class="btn" style="pointer-events:none; font-size: 12px;">OK: <br><span id="resC" style="color:var(--green)">0</span></div>
+      <div class="btn" style="pointer-events:none; font-size: 12px;">KO: <br><span id="resW" style="color:var(--red)">0</span></div>
+      <div class="btn" style="pointer-events:none; font-size: 12px;">SALT: <br><span id="resS">0</span></div>
     </div>
-    
+    <div id="reviewSection" style="max-height: 300px; overflow-y: auto; background: var(--bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border: 1px solid var(--border);">
+      <h3 style="margin-bottom: 10px; font-size: 14px; text-align: left; color: var(--accent);">REVISIONE ERRORI:</h3>
+      <div id="sessionReviewList"></div>
+    </div>
     <button class="btn start-btn" onclick="location.reload()">TORNA ALLA HOME</button>
   </div>
+</div>
+
+<div id="errorList">
+    <div class="load-box">
+        <h2 style="font-family: var(--font-display); font-size: 30px;">QUESITI DA RIPETERE</h2>
+        <div id="globalErrorContainer" style="max-height: 60vh; overflow-y: auto; padding-right: 5px;"></div>
+        <button class="btn start-btn" onclick="location.reload()">CHIUDI</button>
+    </div>
 </div>
 
 <script>
   let allQuestions = [];
   let sessionPool = [];
+  let sessionErrors = [];
   let currentIdx = 0;
   let score = 0;
   let correctCount = 0;
   let wrongCount = 0;
-  
   let selectedMode = 'practice';
   let selectedCat = 'all';
   let selectedN = '20';
-  
   let timeLeft = 90 * 60;
   let timerId = null;
   let answered = false;
 
-  const repeatKey = 'vp2026_errors';
+  const repeatKey = 'vp2026_errors_v3';
+  const dbKey = 'vp2026_db_content';
+  const themeKey = 'vp2026_theme';
 
-  // 1. Caricamento file
+  // --- LOGICA TEMA ---
+  const themeBtn = document.getElementById('themeBtn');
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    themeBtn.textContent = isLight ? '☀️ LIGHT' : '🌙 DARK';
+    localStorage.setItem(themeKey, isLight ? 'light' : 'dark');
+  }
+  themeBtn.onclick = toggleTheme;
+  if(localStorage.getItem(themeKey) === 'light') toggleTheme();
+
+  // --- LOGICA PERSISTENZA DATABASE ---
+  window.onload = () => {
+    const savedDb = localStorage.getItem(dbKey);
+    if(savedDb) {
+      allQuestions = JSON.parse(savedDb);
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('dbStatus').textContent = `Database pronto (${allQuestions.length} quesiti)`;
+      updateRepeatCount();
+    }
+  };
+
   document.getElementById('fileInput').onchange = (e) => {
     const reader = new FileReader();
     reader.onload = (ev) => {
-      try {
-        allQuestions = JSON.parse(ev.target.result);
-        document.getElementById('startBtn').disabled = false;
-        updateRepeatUI();
-      } catch (err) { alert("Errore nel formato del file JSON"); }
+      const content = ev.target.result;
+      allQuestions = JSON.parse(content);
+      localStorage.setItem(dbKey, content); // Salva nel browser
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('dbStatus').textContent = `Caricato con successo (${allQuestions.length} quesiti)`;
+      updateRepeatCount();
     };
     reader.readAsText(e.target.files[0]);
   };
 
-  // 2. Gestione Selezioni UI
-  function setupButtons(containerId, stateVarSetter) {
+  // --- UI NAVIGAZIONE ---
+  function setupButtons(containerId, callback) {
     document.querySelectorAll(`#${containerId} .btn`).forEach(btn => {
       btn.onclick = () => {
+        if(btn.id === 'btnShowErrors') return;
         document.querySelectorAll(`#${containerId} .btn`).forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        stateVarSetter(btn.dataset.mode || btn.dataset.cat || btn.dataset.n);
+        callback(btn.dataset.mode || btn.dataset.cat || btn.dataset.n);
       };
     });
   }
-
   setupButtons('loader', (val) => {
     selectedMode = val;
     document.getElementById('setupPractice').style.display = (val === 'practice') ? 'block' : 'none';
@@ -163,44 +202,55 @@
   setupButtons('catFilter', (val) => selectedCat = val);
   setupButtons('numFilter', (val) => selectedN = val);
 
-  function updateRepeatUI() {
+  function updateRepeatCount() {
     const errors = JSON.parse(localStorage.getItem(repeatKey) || '[]');
     document.getElementById('countRepeat').textContent = errors.length;
-    document.getElementById('btnRepeat').style.display = errors.length > 0 ? 'block' : 'none';
   }
 
-  // 3. Logica di Inizio Sessione
-  document.getElementById('startBtn').onclick = () => {
-    if (selectedMode === 'exam') {
-      // Regole Simulazione: 20 Cost, 40 Pen, 40 Proc Pen
-      const cost = shuffle(allQuestions.filter(q => q.cat === "Diritto Costituzionale")).slice(0, 20);
-      const pen = shuffle(allQuestions.filter(q => q.cat === "Diritto Penale")).slice(0, 40);
-      const proc = shuffle(allQuestions.filter(q => q.cat === "Diritto Processuale Penale")).slice(0, 40);
-      sessionPool = shuffle([...cost, ...pen, ...proc]);
-      startTimer();
+  document.getElementById('btnShowErrors').onclick = () => {
+    const errorIds = JSON.parse(localStorage.getItem(repeatKey) || '[]');
+    const container = document.getElementById('globalErrorContainer');
+    container.innerHTML = '';
+    if (errorIds.length === 0) {
+        container.innerHTML = '<p style="padding:20px; color:var(--muted); text-align:center;">Ottimo! Non hai errori da ripassare.</p>';
     } else {
-      // Esercitazione Libera
-      let pool = [];
-      if (selectedCat === 'repeat') {
-        const errorIds = JSON.parse(localStorage.getItem(repeatKey) || '[]');
-        pool = allQuestions.filter(q => errorIds.includes(q.num));
-      } else {
-        pool = (selectedCat === 'all') ? allQuestions : allQuestions.filter(q => q.cat === selectedCat);
-      }
-      
+        allQuestions.filter(q => errorIds.includes(q.num)).forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'review-card';
+            div.innerHTML = `<small style="color:var(--accent2);">${q.cat} (n. ${q.num})</small><p style="margin:5px 0;">${q.q}</p><div class="ans-correct">Risposta: ${q.a.A}</div>`;
+            container.appendChild(div);
+        });
+    }
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('errorList').style.display = 'flex';
+  };
+
+  // --- LOGICA SESSIONE ---
+  document.getElementById('startBtn').onclick = () => {
+    sessionErrors = [];
+    currentIdx = 0; score = 0; correctCount = 0; wrongCount = 0;
+    
+    if (selectedMode === 'exam') {
+      const c = shuffle(allQuestions.filter(q => q.cat.includes("Costituzionale"))).slice(0, 20);
+      const p = shuffle(allQuestions.filter(q => q.cat.includes("Penale") && !q.cat.includes("Proc"))).slice(0, 40);
+      const pr = shuffle(allQuestions.filter(q => q.cat.includes("Processuale"))).slice(0, 40);
+      sessionPool = shuffle([...c, ...p, ...pr]);
+      startTimer();
+      document.getElementById('timer').style.display = 'block';
+    } else {
+      let pool = (selectedCat === 'all') ? allQuestions : allQuestions.filter(q => q.cat === selectedCat);
       sessionPool = shuffle(pool);
-      if (selectedN !== 'all') {
-        sessionPool = sessionPool.slice(0, parseInt(selectedN));
-      }
+      if (selectedN !== 'all') sessionPool = sessionPool.slice(0, parseInt(selectedN));
       document.getElementById('timer').style.display = 'none';
     }
     
     document.getElementById('loader').style.display = 'none';
     document.getElementById('quiz').style.display = 'flex';
+    document.getElementById('quizMeta').style.display = 'flex';
     renderQuestion();
   };
 
-  function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+  function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
   function renderQuestion() {
     answered = false;
@@ -213,65 +263,49 @@
     const optsDiv = document.getElementById('options');
     optsDiv.innerHTML = '';
     
-    // Le opzioni partono dalla risposta A (sempre corretta nel DB)
-    const answers = [
-      { text: q.a.A, correct: true },
-      { text: q.a.B, correct: false },
-      { text: q.a.C, correct: false },
-      { text: q.a.D, correct: false },
-      { text: q.a.E, correct: false }
-    ];
+    const answers = shuffle([
+      { t: q.a.A, c: true }, { t: q.a.B, c: false }, { t: q.a.C, c: false }, { t: q.a.D, c: false }, { t: q.a.E, c: false }
+    ]);
     
-    shuffle(answers).forEach(ans => {
+    answers.forEach(ans => {
       const b = document.createElement('button');
       b.className = 'option';
-      b.innerHTML = `<span>•</span> ${ans.text}`;
-      b.onclick = () => checkAnswer(ans.correct, b);
+      b.innerHTML = `<span>•</span> ${ans.t}`;
+      b.onclick = () => {
+        if(answered) return;
+        answered = true;
+        if(ans.c) {
+            b.classList.add('correct');
+            score += 0.3; correctCount++;
+            removeGlobalError(q.num);
+        } else {
+            b.classList.add('wrong');
+            score -= 0.1; wrongCount++;
+            sessionErrors.push(q);
+            addGlobalError(q.num);
+            Array.from(optsDiv.children).forEach(child => {
+                if(child.textContent.includes(q.a.A)) child.classList.add('correct');
+            });
+        }
+        document.getElementById('liveScore').textContent = `Punti: ${score.toFixed(2)}`;
+        if(selectedMode === 'practice') document.getElementById('nextBtn').style.display = 'block';
+        else setTimeout(nextStep, 1200);
+      };
       optsDiv.appendChild(b);
     });
   }
 
-  function checkAnswer(isCorrect, element) {
-    if (answered) return;
-    answered = true;
-    const q = sessionPool[currentIdx];
-
-    if (isCorrect) {
-      element.classList.add('correct');
-      score += 0.3;
-      correctCount++;
-      removeError(q.num);
-    } else {
-      element.classList.add('wrong');
-      score -= 0.1;
-      wrongCount++;
-      addError(q.num);
-      // Evidenzia la corretta
-      Array.from(document.querySelectorAll('.option')).forEach(opt => {
-        if (opt.textContent.includes(q.a.A)) opt.classList.add('correct');
-      });
-    }
-
-    document.getElementById('liveScore').textContent = `Punti: ${score.toFixed(2)}`;
-    
-    if (selectedMode === 'practice') {
-      document.getElementById('nextBtn').style.display = 'block';
-    } else {
-      setTimeout(nextStep, 800); // Avanzamento rapido in esame
+  function addGlobalError(num) {
+    let errors = JSON.parse(localStorage.getItem(repeatKey) || '[]');
+    if(!errors.includes(num)) {
+        errors.push(num);
+        localStorage.setItem(repeatKey, JSON.stringify(errors));
     }
   }
 
-  function addError(num) {
+  function removeGlobalError(num) {
     let errors = JSON.parse(localStorage.getItem(repeatKey) || '[]');
-    if (!errors.includes(num)) {
-      errors.push(num);
-      localStorage.setItem(repeatKey, JSON.stringify(errors));
-    }
-  }
-
-  function removeError(num) {
-    let errors = JSON.parse(localStorage.getItem(repeatKey) || '[]');
-    errors = errors.filter(n => n !== num);
+    errors = errors.filter(id => id !== num);
     localStorage.setItem(repeatKey, JSON.stringify(errors));
   }
 
@@ -279,38 +313,44 @@
 
   function nextStep() {
     currentIdx++;
-    if (currentIdx < sessionPool.length) {
-      renderQuestion();
-      window.scrollTo(0, 0);
-    } else {
-      finishQuiz();
-    }
+    if(currentIdx < sessionPool.length) {
+        renderQuestion();
+        window.scrollTo(0,0);
+    } else finishQuiz();
   }
 
   function startTimer() {
+    timeLeft = 90 * 60;
     timerId = setInterval(() => {
       timeLeft--;
-      let m = Math.floor(timeLeft / 60);
-      let s = timeLeft % 60;
-      document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-      if (timeLeft <= 0) finishQuiz();
+      let m = Math.floor(timeLeft/60), s = timeLeft%60;
+      document.getElementById('timer').textContent = `${m}:${s<10?'0':''}${s}`;
+      if(timeLeft <= 0) finishQuiz();
     }, 1000);
   }
 
   function finishQuiz() {
     clearInterval(timerId);
     document.getElementById('quiz').style.display = 'none';
+    document.getElementById('quizMeta').style.display = 'none';
     document.getElementById('results').style.display = 'flex';
-    
     document.getElementById('resTitle').textContent = score.toFixed(2);
     document.getElementById('resC').textContent = correctCount;
     document.getElementById('resW').textContent = wrongCount;
-    document.getElementById('resS').textContent = sessionPool.length - (correctCount + wrongCount);
-    
-    if (selectedMode === 'exam') {
-      document.getElementById('resSub').textContent = score >= 18 ? "IDONEO (SIMULAZIONE)" : "NON IDONEO";
-      document.getElementById('resTitle').style.color = score >= 18 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('resS').textContent = sessionPool.length - (correctCount+wrongCount);
+
+    if(sessionErrors.length > 0) {
+        const revCont = document.getElementById('sessionReviewList');
+        revCont.innerHTML = '';
+        sessionErrors.forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'review-card';
+            div.innerHTML = `<small>${q.cat}</small><p>${q.q}</p><div class="ans-correct">Corretta: ${q.a.A}</div>`;
+            revCont.appendChild(div);
+        });
+        document.getElementById('reviewSection').style.display = 'block';
     }
+    updateRepeatCount();
   }
 </script>
 </body>
