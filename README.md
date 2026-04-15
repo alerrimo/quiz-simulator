@@ -1,6 +1,6 @@
 # 👮 Simulatore Quiz - Vice Ispettori PS 2026
 
-Un simulatore web leggero e reattivo progettato per la preparazione al concorso per **Vice Ispettori della Polizia di Stato**. Il software permette di esercitarsi sulla banca dati ufficiale (5000 quesiti) direttamente dal browser, sia su PC che su dispositivi mobili.
+Un simulatore web leggero e reattivo progettato per la preparazione al concorso per **Vice Ispettori della Polizia di Stato**. Il software permette di esercitarsi sulla banca dati ufficiale (5000 quesiti) del 2025 direttamente dal browser, sia su PC che su dispositivi mobili.
 
 ## 🚀 Funzionalità Principali
 
