@@ -14,13 +14,6 @@ Un simulatore web leggero e reattivo progettato per la preparazione al concorso 
 - **Ottimizzazione Mobile**: Interfaccia adattiva con pulsanti larghi per un uso agevole da smartphone.
 - **Caricamento Automatico**: Il software legge automaticamente il file `banca_dati_quesiti.json` presente nel repository.
 
-## 🛠️ Istruzioni per l'Installazione
-
-1. Carica il file `index.html` in un repository GitHub.
-2. Carica il file `banca_dati_quesiti.json` nella stessa cartella.
-3. Vai nelle **Settings** del repository > **Pages**.
-4. Sotto **Branch**, seleziona `main` e clicca **Save**.
-5. Dopo pochi istanti, il simulatore sarà raggiungibile al link fornito da GitHub.
 
 ## 📱 Uso su Smartphone
 
